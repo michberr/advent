@@ -1,0 +1,1 @@
+Some solutions to [Advent of Code](https://adventofcode.com) 30 day challenge
