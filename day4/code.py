@@ -15,49 +15,41 @@ def clean_data(file):
 
 
 def part_1(bingo_nums, boards):
-    marking_boards = setup_marking_boards(len(bingo_nums))
-
     for num in bingo_nums:
-        winner, board_num = mark_boards_part1(boards, marking_boards, num)
+        winner, board = mark_boards_part1(boards, num)
 
         if winner:
-            sum = calculate_sum(boards[board_num], marking_boards[board_num])
-            return num * sum
+            return num * calculate_sum(board)
 
 
-def setup_marking_boards(num):
-    return [[[0, 0, 0, 0, 0]
-             for i in range(BOARD_SIZE)] for j in range(num)]
-
-
-def mark_boards_part1(boards, mark_boards, num):
-    for x in range(len(boards)):
+def mark_boards_part1(boards, num):
+    for board in boards:
         for i in range(BOARD_SIZE):
             for j in range(BOARD_SIZE):
-                if boards[x][i][j] == num:
-                    mark_boards[x][i][j] = 1
+                if board[i][j] == num:
+                    board[i][j] = 'X'
 
-                    if is_winner(mark_boards[x], i, j):
-                        return True, x
+                    if is_winner(board, i, j):
+                        return True, board
     return False, None
 
 
 def is_winner(board, row, col):
-    if all(num == 1 for num in board[row]):
+    if all(num == 'X' for num in board[row]):
         return True
 
     col_list = [row[col] for row in board]
-    if all(num == 1 for num in col_list):
+    if all(num == 'X' for num in col_list):
         return True
 
     return False
 
 
-def calculate_sum(board, marked_board):
+def calculate_sum(board):
     sum = 0
     for i in range(BOARD_SIZE):
         for j in range(BOARD_SIZE):
-            if marked_board[i][j] == 0:
+            if board[i][j] != 'X':
                 sum += board[i][j]
 
     return sum
@@ -66,30 +58,24 @@ def calculate_sum(board, marked_board):
 def part_2(bingo_nums, boards):
     board_wins = [False] * len(boards)
 
-    mark_boards = setup_marking_boards(len(bingo_nums))
-
     for num in bingo_nums:
-        winners = mark_boards_part2(boards, mark_boards, num, board_wins)
+        winners = mark_boards_part2(boards, num, board_wins)
 
         if all(board_wins):
             if len(winners) > 1:
                 raise('Two players won the last round')
-
-            winner = winners[0]
-            sum = calculate_sum(boards[winner], mark_boards[winner])
-
-            return num * sum
+            return num * calculate_sum(boards[winners[0]])
 
 
-def mark_boards_part2(boards, mark_boards, num, board_wins):
+def mark_boards_part2(boards, num, board_wins):
     winners = []
     for x in range(len(boards)):
         for i in range(BOARD_SIZE):
             for j in range(BOARD_SIZE):
                 if boards[x][i][j] == num:
-                    mark_boards[x][i][j] = 1
+                    boards[x][i][j] = 'X'
 
-                    if is_winner(mark_boards[x], i, j) and not board_wins[x]:
+                    if is_winner(boards[x], i, j) and not board_wins[x]:
                         winners.append(x)
                         board_wins[x] = True
 
@@ -104,9 +90,12 @@ assert len(bingo_nums) == 100
 assert len(boards) == 100
 
 print('part 1 winning score', part_1(bingo_nums, boards))
+
+bingo_nums, boards = clean_data('input.txt')
 print('part 2 winning score', part_2(bingo_nums, boards))
 
 # Test
 test_bingo, test_boards = clean_data('test_input.txt')
 assert part_1(test_bingo, test_boards) == 4512
+test_bingo, test_boards = clean_data('test_input.txt')
 assert part_2(test_bingo, test_boards) == 1924
