@@ -21,14 +21,7 @@ def part_1(bingo_nums, boards):
         winner, board_num = mark_boards_part1(boards, marking_boards, num)
 
         if winner:
-            sum = 0
-            board = boards[board_num]
-            marked_board = marking_boards[board_num]
-
-            for i in range(BOARD_SIZE):
-                for j in range(BOARD_SIZE):
-                    if marked_board[i][j] == 0:
-                        sum += board[i][j]
+            sum = calculate_sum(boards[board_num], marking_boards[board_num])
             return num * sum
 
 
@@ -60,6 +53,16 @@ def is_winner(board, row, col):
     return False
 
 
+def calculate_sum(board, marked_board):
+    sum = 0
+    for i in range(BOARD_SIZE):
+        for j in range(BOARD_SIZE):
+            if marked_board[i][j] == 0:
+                sum += board[i][j]
+
+    return sum
+
+
 def part_2(bingo_nums, boards):
     board_wins = [False] * len(boards)
 
@@ -73,14 +76,8 @@ def part_2(bingo_nums, boards):
                 raise('Two players won the last round')
 
             winner = winners[0]
-            board = boards[winner]
-            mark_board = mark_boards[winner]
-            sum = 0
+            sum = calculate_sum(boards[winner], mark_boards[winner])
 
-            for i in range(BOARD_SIZE):
-                for j in range(BOARD_SIZE):
-                    if mark_board[i][j] == 0:
-                        sum += board[i][j]
             return num * sum
 
 
