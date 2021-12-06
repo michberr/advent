@@ -8,37 +8,14 @@ def clean_data(file):
 
 
 def part_1(data, board_size):
-    grid = [[0] * board_size for n in range(board_size)]
-
-    for row in data:
-        [x1, y1], [x2, y2] = row
-        if x1 != x2 and y1 != y2:
-            next
-
-        if x1 == x2:
-            # Swap y1 and y2 if y1 is larger than y2
-            if y1 > y2:
-                y1, y2 = y2, y1
-            for y in range(y1, y2 + 1):
-                grid[x1][y] += 1
-
-        if y1 == y2:
-            # Swap x1 and x2 if x1 is larger than x2
-            if x1 > x2:
-                x1, x2 = x2, x1
-            for x in range(x1, x2 + 1):
-                grid[x][y1] += 1
-
-    count = 0
-    for i in range(len(grid)):
-        for j in range(len(grid)):
-            if grid[i][j] >= 2:
-                count += 1
-
-    return count
+    return calculate_overlapping_vents(data, board_size)
 
 
 def part_2(data, board_size):
+    return calculate_overlapping_vents(data, board_size, False)
+
+
+def calculate_overlapping_vents(data, board_size, skip_diagonals: True):
     grid = [[0] * board_size for n in range(board_size)]
 
     for row in data:
